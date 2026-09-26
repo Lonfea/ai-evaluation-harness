@@ -20,6 +20,11 @@ class TargetResult(BaseModel):
 class AggregateResult(BaseModel):
     cases: int
     pass_rate: float
-    mean_faithfulness: float
-    mean_answer_relevancy: float
     citation_accuracy: float
+    # LLM-judge metrics are None when the run used deterministic checks only.
+    mean_faithfulness: float | None = None
+    mean_answer_relevancy: float | None = None
+    # Added in v0.2; defaults keep older approved baselines loadable.
+    refusal_accuracy: float | None = None
+    fact_accuracy: float | None = None
+    category_pass_rates: dict[str, float] = Field(default_factory=dict)
