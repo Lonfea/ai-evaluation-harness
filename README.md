@@ -6,6 +6,9 @@
 ![RAGAS](https://img.shields.io/badge/Eval-RAGAS-0052CC)
 ![LangSmith](https://img.shields.io/badge/Tracing-LangSmith-1C3C3C)
 
+
+<p align="center"><img src="docs/architecture.svg" alt="ai-evaluation-harness architecture" width="100%"></p>
+
 A regression-testing system for AI applications with **120 committed golden cases**, DeepEval and RAGAS quality metrics, optional LangSmith tracing, and a quality gate that can fail deployment when model behavior degrades.
 
 ## Why this exists
