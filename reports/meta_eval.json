@@ -1,0 +1,86 @@
+{
+  "goldens": "/home/user/ai-evaluation-harness/goldens/goldens.jsonl",
+  "cases": 120,
+  "judges": "none (deterministic checks only)",
+  "defective_systems_blocked": 6,
+  "defective_systems_blocked_by_v1_checks": 3,
+  "defective_systems": 6,
+  "oracle_passes": true,
+  "systems": {
+    "oracle (correct)": {
+      "blocked": false,
+      "blocked_by_v1_checks": false,
+      "pass_rate": 1.0,
+      "reasons": []
+    },
+    "cites every retrieved page": {
+      "blocked": true,
+      "blocked_by_v1_checks": false,
+      "pass_rate": 0.25,
+      "reasons": [
+        "pass_rate below threshold: 0.250 < 0.900",
+        "citation_accuracy below threshold: 0.250 < 0.950",
+        "category conflicting_context pass rate below threshold: 0.000 < 0.800",
+        "category distractor_resistance pass rate below threshold: 0.000 < 0.800",
+        "category grounded_fact pass rate below threshold: 0.000 < 0.800"
+      ]
+    },
+    "never abstains (invents figures)": {
+      "blocked": true,
+      "blocked_by_v1_checks": false,
+      "pass_rate": 0.75,
+      "reasons": [
+        "pass_rate below threshold: 0.750 < 0.900",
+        "citation_accuracy below threshold: 0.750 < 0.950",
+        "refusal_accuracy below threshold: 0.750 < 0.950",
+        "category unanswerable pass rate below threshold: 0.000 < 0.800"
+      ]
+    },
+    "always abstains": {
+      "blocked": true,
+      "blocked_by_v1_checks": true,
+      "pass_rate": 0.25,
+      "reasons": [
+        "pass_rate below threshold: 0.250 < 0.900",
+        "citation_accuracy below threshold: 0.250 < 0.950",
+        "refusal_accuracy below threshold: 0.250 < 0.950",
+        "fact_accuracy below threshold: 0.250 < 0.950",
+        "category conflicting_context pass rate below threshold: 0.000 < 0.800",
+        "category distractor_resistance pass rate below threshold: 0.000 < 0.800",
+        "category grounded_fact pass rate below threshold: 0.000 < 0.800"
+      ]
+    },
+    "follows distractor passage": {
+      "blocked": true,
+      "blocked_by_v1_checks": true,
+      "pass_rate": 0.75,
+      "reasons": [
+        "pass_rate below threshold: 0.750 < 0.900",
+        "citation_accuracy below threshold: 0.750 < 0.950",
+        "fact_accuracy below threshold: 0.750 < 0.950",
+        "category distractor_resistance pass rate below threshold: 0.000 < 0.800"
+      ]
+    },
+    "uses superseded draft": {
+      "blocked": true,
+      "blocked_by_v1_checks": true,
+      "pass_rate": 0.75,
+      "reasons": [
+        "pass_rate below threshold: 0.750 < 0.900",
+        "citation_accuracy below threshold: 0.750 < 0.950",
+        "fact_accuracy below threshold: 0.750 < 0.950",
+        "category conflicting_context pass rate below threshold: 0.000 < 0.800"
+      ]
+    },
+    "right page, wrong number": {
+      "blocked": true,
+      "blocked_by_v1_checks": false,
+      "pass_rate": 0.75,
+      "reasons": [
+        "pass_rate below threshold: 0.750 < 0.900",
+        "fact_accuracy below threshold: 0.750 < 0.950",
+        "category grounded_fact pass rate below threshold: 0.000 < 0.800"
+      ]
+    }
+  }
+}
