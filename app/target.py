@@ -12,11 +12,8 @@ def call_target(case: GoldenCase) -> TargetResult:
     with httpx.Client(timeout=90) as client:
         response = client.post(
             url,
-            json={
-                "input": case.input,
-                "retrieval_context": case.retrieval_context,
-                "expected_output": case.expected_output,
-            },
+            # Never send expected_output: the system under test must not see the answer key.
+            json={"input": case.input, "retrieval_context": case.retrieval_context},
         )
         response.raise_for_status()
         return TargetResult.model_validate(response.json())
