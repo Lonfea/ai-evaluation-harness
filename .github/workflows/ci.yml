@@ -1,0 +1,61 @@
+name: ai-eval-harness-ci
+
+on:
+  push:
+    paths:
+      - "**"
+      - ".github/workflows/ai-eval-harness-ci.yml"
+  pull_request:
+    paths:
+      - "**"
+      - ".github/workflows/ai-eval-harness-ci.yml"
+  workflow_dispatch:
+    inputs:
+      run_full_evals:
+        description: "Run model-based quality evaluation"
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  deterministic:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+      - run: pip install -e ".[dev]"
+      - run: ruff check .
+      - run: pytest -q
+
+  full-evals:
+    if: github.event_name == 'workflow_dispatch' && inputs.run_full_evals
+    needs: deterministic
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+    env:
+      TARGET_URL: ${{ secrets.EVAL_TARGET_URL }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      LANGSMITH_API_KEY: ${{ secrets.LANGSMITH_API_KEY }}
+      LANGSMITH_TRACING: "true"
+      LANGSMITH_PROJECT: "ai-engineering-evals"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+      - run: pip install -e ".[dev]"
+      - run: python -m app.runner
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eval-report
+          path: reports/latest.json
