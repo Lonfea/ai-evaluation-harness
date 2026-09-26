@@ -1,5 +1,11 @@
 # Automated AI Evaluation Harness
 
+[![CI](https://github.com/Lonfea/ai-evaluation-harness/actions/workflows/ci.yml/badge.svg)](https://github.com/Lonfea/ai-evaluation-harness/actions/workflows/ci.yml)
+![Golden Cases](https://img.shields.io/badge/Golden%20Cases-120-6f42c1)
+![DeepEval](https://img.shields.io/badge/Eval-DeepEval-black)
+![RAGAS](https://img.shields.io/badge/Eval-RAGAS-0052CC)
+![LangSmith](https://img.shields.io/badge/Tracing-LangSmith-1C3C3C)
+
 A regression-testing system for AI applications with **120 committed golden cases**, DeepEval and RAGAS quality metrics, optional LangSmith tracing, and a quality gate that can fail deployment when model behavior degrades.
 
 ## Why this exists
@@ -7,6 +13,39 @@ A regression-testing system for AI applications with **120 committed golden case
 Traditional unit tests catch deterministic software bugs. They do not answer whether an LLM response became less faithful, less relevant, or worse at citing evidence after a prompt, retrieval, model, or infrastructure change.
 
 This harness treats AI quality as a release criterion.
+
+## Release architecture
+
+```mermaid
+flowchart LR
+    C[Code / Prompt / Model Change] --> CI[GitHub Actions]
+    CI --> T[Deterministic Tests]
+    T --> G[120 Golden Cases]
+    G --> D[DeepEval]
+    G --> R[RAGAS]
+    D --> Q{Quality Gate}
+    R --> Q
+    Q -->|pass| DEP[Deployment allowed]
+    Q -->|regression| BLOCK[Release blocked]
+    G -. traces .-> LS[LangSmith]
+```
+
+## Quality gate
+
+```mermaid
+flowchart TD
+    RUN[Candidate evaluation] --> ABS{Meets absolute thresholds?}
+    ABS -->|no| FAIL[Fail release]
+    ABS -->|yes| BASE{Approved baseline exists?}
+    BASE -->|no| PASS[Pass absolute gate]
+    BASE -->|yes| REG{Regression > tolerance?}
+    REG -->|yes| FAIL
+    REG -->|no| PASS
+```
+
+## What this demonstrates
+
+This repository treats **model behavior as testable release quality**, not an informal manual check. It separates deterministic contract validation from probabilistic quality evaluation and makes regressions capable of blocking deployment.
 
 ## Evaluation layers
 
@@ -62,6 +101,15 @@ and returns:
     }
 
 This makes the harness usable against a local service, preview deployment, or production canary.
+
+## Golden-suite composition
+
+| Failure mode | What the suite checks |
+|---|---|
+| Grounded factual QA | answer is supported by supplied context |
+| Distractor resistance | irrelevant context does not dominate |
+| Unanswerable questions | model abstains instead of hallucinating |
+| Conflicting evidence | response handles contradictory context |
 
 ## Run deterministic CI
 
